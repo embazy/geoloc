@@ -1,6 +1,7 @@
 <html> 
   <p id="g"></p>
   <script>
+    var cnt=0;
       function getUserLocation() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
@@ -12,7 +13,14 @@
       }
      }
 
-setInterval(function () {getUserLocation();}, 1000);
+setInterval(function () {
+  
+if(cnt==0){ getUserLocation(); }
+
+if(cnt==1){ getUserLocation(); cnt=0; }
+
+cnt++;
+}, 1000);
 
     </script>
 
