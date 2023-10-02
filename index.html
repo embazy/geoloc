@@ -1,10 +1,17 @@
 <html> 
-<p id="g"></p>
+<p id="kcal"></p>
+<p id="speed"></p>
 <script>
 //f*d*i 
 //https://gis.stackexchange.com/questions/386955/how-to-calculate-elevation-angle-between-two-gps-coordinates
 //https://www.careers360.com/premium/how-can-calculus-optimise-workout-routine
+var startDate;
+var endDate;
+var elapsed = (endDate.getTime() - startDate.getTime()) / 1000;
+    
 var kcal=0;
+var speedms=0;
+    
 var mass=70;
 var gravity=9.8;
 
@@ -18,6 +25,12 @@ var altitude2;
 var force=mass*gravity;
 var distance=0;
 var incline=0;
+
+function calcSpeed(distance){
+endDate   = new Date();
+elapsed = (endDate.getTime() - startDate.getTime()) / 1000;
+return distance/elapsed;
+}
     
 function calcDistance(Latitude1,Longitude1,Latitude2,Longitude){  // generally used geo measurement function
 var R = 6378.137; // Radius of earth in KM
@@ -60,10 +73,14 @@ altitude2=position.coords.altitude;
 if(latitude!=position.coords.latitude&&longitude!=position.coords.longitude&&altitude!=position.coords.altitude){
 distance = calcDistance(latitude1,longitude1,latitude2,longitude2,altitude1,altitude2);
 incline = calcElev(latitude1,longitude1,latitude2,longitude2,altitude1,altitude2);
+speedms = calcSpeed(distance);
 kcal+=force*distance*incline;
-document.getElementById("g").innerHTML = kcal;
+document.getElementById("kcal").innerHTML = kcal + "kcal";
+document.getElementById("speed").innerHTML = speed + "m/s";
 }
-              
+
+startDate = new Date();
+    
 altitude1 = position.coords.altitude;
 longitude1 = position.coords.longitude;
 latitude1 = position.coords.latitude; 
