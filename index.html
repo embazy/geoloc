@@ -1,0 +1,19 @@
+<html> 
+  <p id="g"></p>
+  <script>
+      function getUserLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              document.getElementById("g").innerHTML = latitude + " , " + longitude;
+            });
+      }
+     }
+
+setInterval(function () {getUserLocation();}, 1000);
+
+    </script>
+
+</html>
