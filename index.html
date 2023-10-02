@@ -1,27 +1,80 @@
 <html> 
-  <p id="g"></p>
-  <script>
-    var cnt=0;
-      function getUserLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            function(position) {
-              var latitude = position.coords.latitude;
-              var longitude = position.coords.longitude;
-              document.getElementById("g").innerHTML = latitude + " , " + longitude;
-            });
-      }
-     }
+<p id="g"></p>
+<script>
+//f*d*i 
+//https://gis.stackexchange.com/questions/386955/how-to-calculate-elevation-angle-between-two-gps-coordinates
+//https://www.careers360.com/premium/how-can-calculus-optimise-workout-routine
+var kcal=0;
+var mass=70;
+var gravity=9.8;
+
+var latitude1;
+var longitude1;
+var altitude1;
+var latitude2;
+var longitude2;
+var altitude2;
+
+var force=mass*gravity;
+var distance=0;
+var incline=0;
+    
+function calcDistance(Latitude1,Longitude1,Latitude2,Longitude){  // generally used geo measurement function
+var R = 6378.137; // Radius of earth in KM
+var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+Math.sin(dLon/2) * Math.sin(dLon/2);
+var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+var d = R * c;
+return d * 1000; // meters
+}
+    
+function calcElev(Latitude1,Longitude1,Latitude2,Longitude2,Altitude1,Altitude2){
+var distanceNS = Math.Abs(Latitude2-Latitude1) * 1852;
+var distanceEW = Math.Abs(Longitude2-Longitude1) * 1852 * Math.Cos((Latitude2+Latitude1)/2);
+var distanceH = Math.sqrt(distanceNS * distanceNS + distanceEW * distanceEW);
+var distanceV = Altitude1 - Altitude2;
+var elevation = Math.atan (distanceV / distanceH);
+return elevation;
+}
+    
+function getUserLocation() {
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(
+function(position) {
+           
+if(latitude!=position.coords.latitude){
+latitude2=position.coords.latitude; 
+}
+              
+if(longitude!=position.coords.longitude){
+longitude2=position.coords.longitude; 
+}
+              
+if(altitude!=position.coords.altitude){
+altitude2=position.coords.altitude;
+}
+
+if(latitude!=position.coords.latitude&&longitude!=position.coords.longitude&&altitude!=position.coords.altitude){
+distance = calcDistance(latitude1,longitude1,latitude2,longitude2,altitude1,altitude2);
+incline = calcElev(latitude1,longitude1,latitude2,longitude2,altitude1,altitude2);
+kcal+=force*distance*incline;
+document.getElementById("g").innerHTML = kcal;
+}
+              
+altitude1 = position.coords.altitude;
+longitude1 = position.coords.longitude;
+latitude1 = position.coords.latitude; 
+});
+}
+}
 
 setInterval(function () {
-  
-if(cnt==0){ getUserLocation(); }
-
-if(cnt==1){ getUserLocation(); cnt=0; }
-
-cnt++;
+getUserLocation();
 }, 1000);
 
-    </script>
+</script>
 
 </html>
